@@ -1,6 +1,13 @@
 import dotenv from "dotenv";
 dotenv.config({ path: "./src/config/.env" });
-import { Telegraf, Markup, session, Context, Scenes } from "telegraf";
+import {
+  Telegraf,
+  Markup,
+  Scenes,
+  session,
+  Context,
+  Middleware,
+} from "telegraf";
 
 const token: string | undefined = process.env.TOKEN;
 import startController from "./controllers/startController.js";
@@ -16,7 +23,7 @@ import { SceneSessionData } from "telegraf/typings/scenes/context.js";
 // import db from "./models/models.js";
 
 const bot: Telegraf<Context> = new Telegraf(token);
-const stage = new Scenes.Stage<Scenes.SceneContext>([ placesScene], {
+const stage = new Scenes.Stage<Scenes.SceneContext>([weatherScene, placesScene], {
   default: "super-wizard",
 });
 
@@ -37,10 +44,14 @@ bot.use(stage.middleware());
 
 // start();
 
+
 bot.use(startController);
 bot.use(dogController);
 bot.use(catController);
-// bot.use(unsubscribeController);
+bot.use(weatherController);
+bot.command("subscribe", async (ctx: any) => {
+  ctx.scene.enter("weatherScene");
+});
 
 // bot.use(weatherController);
 // bot.command("subscribe", async (ctx: any) => {
