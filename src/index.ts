@@ -23,9 +23,12 @@ import { SceneSessionData } from "telegraf/typings/scenes/context.js";
 // import db from "./models/models.js";
 
 const bot: Telegraf<Context> = new Telegraf(token);
-const stage = new Scenes.Stage<Scenes.SceneContext>([weatherScene, placesScene], {
-  default: "super-wizard",
-});
+const stage = new Scenes.Stage<Scenes.SceneContext>(
+  [weatherScene, placesScene],
+  {
+    default: "super-wizard",
+  }
+);
 
 bot.use(session());
 bot.use(stage.middleware());
@@ -43,7 +46,6 @@ bot.use(stage.middleware());
 // };
 
 // start();
-
 
 bot.use(startController);
 bot.use(dogController);
