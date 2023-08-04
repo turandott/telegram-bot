@@ -52,7 +52,7 @@ stepShow.on("text", async (ctx: any) => {
 
   sights.forEach((sight, index) => {
     ctx.reply(
-      `${index + 1}. ${sight.name} in the street ${sight.address}`
+      `${index + 1}. ${sight.name} in the street ${sight.adress}`
     );
   });
   return ctx.wizard.next();

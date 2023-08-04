@@ -5,6 +5,7 @@ import db from "../models/models.js";
 const User = db.User;
 const Weather = db.Weather;
 
+
 const stepEnterCity = new Composer<Scenes.WizardContext>();
 const stepEnterTime = new Composer<Scenes.WizardContext>();
 const stepGetWeather = new Composer<Scenes.WizardContext>();
@@ -67,32 +68,24 @@ stepGetWeather.hears(/^\d{2}:\d{2}$/, async (ctx: any) => {
     });
   }
 
-  const job = cron.schedule(`${minutes} ${hours} * * *`, async () => {
-    const city = ctx.wizard.state.city;
-    const weather = await weatherService.getWeather(city);
-    console.log(weather);
-    ctx.reply(
-      `The weather in ${city} is ${weather.current.condition.text.toLowerCase()}, the temperature is ${
-        weather.current.temp_c
-      }, wind speed is ${weather.current.wind_mph} mph, humidity is ${
-        weather.current.humidity
-      } percent.`
-    );
-  });
-  ctx.wizard.state.cronJob = job;
+  // const job = cron.schedule(`${minutes} ${hours} * * *`, async () => {
+  //   const city = ctx.wizard.state.city;
+  //   const weather = await weatherService.getWeather(city);
+  //   console.log(weather);
+  //   ctx.reply(
+  //     `The weather in ${city} is ${weather.current.condition.text.toLowerCase()}, the temperature is ${
+  //       weather.current.temp_c
+  //     }, wind speed is ${weather.current.wind_mph} mph, humidity is ${
+  //       weather.current.humidity
+  //     } percent.`
+  //   );
+  // });
+  // ctx.wizard.state.cronJob = job;
 
-  job.start();
+  // job.start();
 
   return ctx.wizard.next();
 });
-
-// stepFour.command("unsubscribe", (ctx) => {
-//   if (ctx.state.cronJob) {
-//     ctx.state.cronJob.stop();
-//     delete ctx.state.cronJob;
-//   }
-//   ctx.reply("You have unsubscribed from receiving the scheduled message.");
-// });
 
 stepExit.command("leave", (ctx) => ctx.scene.leave());
 
