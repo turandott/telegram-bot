@@ -1,9 +1,12 @@
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 async function getDogImage(): Promise<string> {
   try {
     const response = await axios.get(
-      "https://api.thedogapi.com/v1/images/search"
+      process.env.DOG_API
     );
     const imageUrl = response.data[0].url;
     return imageUrl;

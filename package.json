@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^20.4.5",
     "axios": "^1.4.0",
     "cron": "^2.4.0",
     "dotenv": "^16.3.1",
@@ -23,12 +22,13 @@
     "pg": "^8.11.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.1",
-    "telegraf": "github:telegraf/telegraf",
-    "typescript": "^5.1.6"
+    "telegraf": "github:telegraf/telegraf"
   },
   "devDependencies": {
+    "@types/node": "^20.4.8",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
-    "eslint": "^8.45.0"
+    "eslint": "^8.45.0",
+    "typescript": "^5.1.6"
   }
 }

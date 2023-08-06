@@ -5,7 +5,7 @@ dotenv.config();
 const getWeather = async (city: string) => {
   try {
     const response = await axios.get(
-      "https://weatherapi-com.p.rapidapi.com/current.json",
+      process.env.WEATHER_API,
       {
         params: { q: city },
         headers: {
