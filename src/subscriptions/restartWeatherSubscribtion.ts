@@ -18,8 +18,8 @@ async function restartWeatherSubscription(sendMessage) {
 
       if (weather && weather.time) {
         const { time, city } = weather;
-        const [hours, minutes, seconds] = time.split(":");
-        const cronTime = `${parseInt(seconds)} ${parseInt(minutes)} ${parseInt(
+        const [hours, minutes] = time.split(":");
+        const cronTime = `${parseInt(minutes)} ${parseInt(
           hours
         )} * * *`;
 

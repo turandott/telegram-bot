@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./src/config/.env" });
 import { Telegraf, Scenes, session } from "telegraf";
 import { Context } from "./types";
-const token: string | undefined = process.env.TOKEN;
 import controllers from "./controllers";
 import cron from "node-cron";
 import db from "./models/index.js";
@@ -12,10 +11,12 @@ import sequelize from "./config/db.js";
 import TelegrafI18n from "telegraf-i18n";
 import path from "path";
 import { fileURLToPath } from "url";
+import rateLimit from "telegraf-ratelimit";
+import { limitConfig } from "./config/limit";
 
 const __filename = fileURLToPath(import.meta.url || "");
 const __dirname = path.dirname(__filename || "");
-console.log(__dirname);
+const token: string | undefined = process.env.TOKEN;
 
 const i18n = new TelegrafI18n({
   defaultLanguage: "en",
@@ -38,6 +39,7 @@ const stage = new Scenes.Stage<Scenes.SceneContext>(
 bot.use(session());
 bot.use(i18n.middleware());
 bot.use(stage.middleware());
+bot.use(rateLimit(limitConfig));
 
 const start = async () => {
   try {
