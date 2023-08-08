@@ -9,7 +9,19 @@ import db from "./models/index.js";
 import restartWeatherSubscription from "./subscriptions/restartWeatherSubscribtion";
 import { SceneSessionData } from "telegraf/typings/scenes/context.js";
 import sequelize from "./config/db.js";
+import TelegrafI18n from "telegraf-i18n";
+import path from "path";
+import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url || "");
+const __dirname = path.dirname(__filename || "");
+console.log(__dirname);
+
+const i18n = new TelegrafI18n({
+  defaultLanguage: "en",
+  allowMissing: false, // Default true
+  directory: path.resolve(__dirname, "locales"),
+});
 
 const bot: Telegraf<Context> = new Telegraf(token);
 
@@ -24,7 +36,7 @@ const stage = new Scenes.Stage<Scenes.SceneContext>(
   }
 );
 bot.use(session());
-
+bot.use(i18n.middleware());
 bot.use(stage.middleware());
 
 const start = async () => {

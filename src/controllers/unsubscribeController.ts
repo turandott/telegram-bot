@@ -37,7 +37,7 @@ stepUnsubscribe.on("text", async (ctx: any) => {
 
   ctx.session.weatherSubscriptions = subscriptions;
   console.log(ctx.session.weatherSubscriptions);
-  ctx.reply("You have unsubscribed from receiving the scheduled message.");
+  ctx.reply(ctx.i18n.t("unsubscribe.text"));
   ctx.scene.leave();
 });
 

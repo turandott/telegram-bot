@@ -1,5 +1,6 @@
 import { Composer, Markup, Scenes, session, Telegraf } from "telegraf";
 import placeService from "../services/placeService.js";
+import { Context } from "../types/index.js";
 
 const stepEnterCity = new Composer<Scenes.WizardContext>();
 const stepKind = new Composer<Scenes.WizardContext>();
@@ -7,15 +8,15 @@ const stepShow = new Composer<Scenes.WizardContext>();
 
 const stepExit = new Composer<Scenes.WizardContext>();
 
-stepEnterCity.on("text", async (ctx) => {
-  await ctx.reply("Enter the city:");
+stepEnterCity.on("text", async (ctx: any) => {
+  await ctx.reply(ctx.i18n.t("place.city"));
   return ctx.wizard.next();
 });
 
 stepKind.on("text", async (ctx: any) => {
   const city = ctx.message.text;
   ctx.wizard.state.city = city;
-  ctx.reply("Please select an option:", {
+  ctx.reply(ctx.i18n.t("place.option"), {
     reply_markup: {
       keyboard: [
         [
@@ -29,14 +30,6 @@ stepKind.on("text", async (ctx: any) => {
       one_time_keyboard: true,
     },
   });
-  // .then(() => {
-  //   ctx.addListener("message", (message: any) => {
-  //     if (message.text === "Cafe" || message.text === "Historical places") {
-  //       console.log("Chosen option:", message.text);
-  //     }
-  //   });
-  // });
-
   return ctx.wizard.next();
 });
 
@@ -51,9 +44,7 @@ stepShow.on("text", async (ctx: any) => {
   console.log(sights);
 
   sights.forEach((sight, index) => {
-    ctx.reply(
-      `${index + 1}. ${sight.name} in the street ${sight.adress}`
-    );
+    ctx.reply(ctx.i18n.t("place.text", { sight, index }));
   });
   return ctx.wizard.next();
 });

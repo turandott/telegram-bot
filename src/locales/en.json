@@ -1,0 +1,21 @@
+{
+  "start": {
+    "text": "Hello 👋",
+    "help": "This bot can help you get a random photo of a cat or dog, check the weather in a city of your choice, check out a cafe in some city, or create some notes and get notifications💖"
+  },
+  "weather": {
+    "city": "Please enter the city: ",
+    "time": "Enter the time in HH:MM format for subscription messages: ",
+    "your_time": "You have choosen time: ${time}",
+    "invalid_time": "Invalid time format. Please try again.",
+    "text": "The weather in ${city} is ${currentWeather}, the temperature is ${currentTempreture}, wind speed is ${currentWind} mph, humidity is ${currentHumidity} percent."
+  },
+  "unsubscribe": {
+    "text": "You have unsubscribed from receiving the scheduled message."
+  },
+  "place": {
+    "city": "Enter the city: ",
+    "option": "Please select an option: ",
+    "text": "${index + 1}. ${sight.name} in the street ${sight.adress}"
+  }
+}
