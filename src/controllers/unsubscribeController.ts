@@ -1,5 +1,6 @@
 import { Composer, Context, Scenes, session } from "telegraf";
 import db from "../models/index.js";
+import { userToWetherUnsubscribe } from "../models/weatherUnsubscribe.js";
 const User = db.User;
 const Weather = db.Weather;
 
@@ -7,43 +8,44 @@ const stepUnsubscribe = new Composer<Scenes.WizardContext>();
 const stepExit = new Composer<Scenes.WizardContext>();
 
 stepUnsubscribe.on("text", async (ctx: any) => {
-  const userId = ctx.message.chat.id;
-  const existingUser = await User.findOne({ where: { chatId: userId } });
+  try {
+    const userId = ctx.message.chat.id;
+    userToWetherUnsubscribe(userId);
 
-  await Weather.destroy({ where: { id: existingUser.id } });
-
-  await User.destroy({ where: { chatId: userId } });
-  if (ctx.session.state.cronJob) {
-    ctx.state.cronJob.stop();
-    delete ctx.state.cronJob;
-  }
-  let subscriptions = ctx.session.weatherSubscriptions || [];
-  console.log(ctx.session.weatherSubscriptions);
-
-  subscriptions.forEach((subscription: any) => {
-    if (
-      subscription &&
-      subscription.weatherSubscription &&
-      subscription.userId == userId
-    ) {
-      subscription.weatherSubscription.stop();
+    if (ctx.session.state.cronJob) {
+      ctx.state.cronJob.stop();
+      delete ctx.state.cronJob;
     }
-  });
+    let subscriptions = ctx.session.weatherSubscriptions || [];
+    console.log(ctx.session.weatherSubscriptions);
 
-  subscriptions = subscriptions.filter((subscription: any) => {
-    console.log(subscription);
-    return subscription.userId !== userId;
-  });
+    subscriptions.forEach((subscription: any) => {
+      if (
+        subscription &&
+        subscription.weatherSubscription &&
+        subscription.userId == userId
+      ) {
+        subscription.weatherSubscription.stop();
+      }
+    });
 
-  ctx.session.weatherSubscriptions = subscriptions;
-  console.log(ctx.session.weatherSubscriptions);
-  ctx.reply(ctx.i18n.t("unsubscribe.text"));
-  ctx.scene.leave();
+    subscriptions = subscriptions.filter((subscription: any) => {
+      console.log(subscription);
+      return subscription.userId !== userId;
+    });
+
+    ctx.session.weatherSubscriptions = subscriptions;
+    ctx.reply(ctx.i18n.t("unsubscribe.text"));
+    ctx.scene.leave();
+  } catch (error) {
+    console.log(error);
+    await ctx.reply(ctx.i18n.t("error.sever"));
+  }
 });
 
 const unsubscribeScene = new Scenes.WizardScene(
   "unsubscribeScene",
-  stepUnsubscribe
+  stepUnsubscribe,
 );
 
 export default unsubscribeScene;

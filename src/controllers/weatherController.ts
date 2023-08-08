@@ -2,6 +2,7 @@ import { Composer } from "telegraf";
 import { Context } from "../types/index.js";
 import weatherService from "../services/weatherService.js";
 import { getWeatherResponse } from "../services/responseWeatherService.js";
+import { isValidCity } from "../helpers/cityCheckHelper.js";
 const composer = new Composer<Context>();
 
 composer.command("weather", (ctx: Context) => {
@@ -10,12 +11,17 @@ composer.command("weather", (ctx: Context) => {
 
 composer.on("text", async (ctx) => {
   const city: string = ctx.message.text;
+
+  if (!isValidCity(city)) {
+    return ctx.reply(ctx.i18n.t("error.city_error"));
+  }
   try {
     const weatherResponse = await getWeatherResponse(city);
     console.log(weatherResponse);
-    ctx.reply(weatherResponse);
+    return ctx.reply(weatherResponse);
   } catch (error) {
-    ctx.reply(error.message);
+    console.log(`error occure with weather: ${error}`);
+    return ctx.reply(ctx.i18n.t("weather.error"));
   }
 });
 

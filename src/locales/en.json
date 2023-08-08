@@ -3,12 +3,22 @@
     "text": "Hello 👋",
     "help": "This bot can help you get a random photo of a cat or dog, check the weather in a city of your choice, check out a cafe in some city, or create some notes and get notifications💖"
   },
+  "cat": {
+    "error": "An error occurred while receiving the image of the cat"
+  },
+  "dog": {
+    "error": "An error occurred while receiving the image of the dog"
+  },
   "weather": {
     "city": "Please enter the city: ",
     "time": "Enter the time in HH:MM format for subscription messages: ",
     "your_time": "You have choosen time: ${time}",
     "invalid_time": "Invalid time format. Please try again.",
-    "text": "The weather in ${city} is ${currentWeather}, the temperature is ${currentTempreture}, wind speed is ${currentWind} mph, humidity is ${currentHumidity} percent."
+    "text": "The weather in ${city} is ${currentWeather}, the temperature is ${currentTempreture}, wind speed is ${currentWind} mph, humidity is ${currentHumidity} percent.",
+    "error": "Sorry, something wrong occured with weather data."
+  },
+  "subscribe": {
+    "error": "Sorry, something wrong occured with subscription, try later."
   },
   "unsubscribe": {
     "text": "You have unsubscribed from receiving the scheduled message."
@@ -16,6 +26,12 @@
   "place": {
     "city": "Enter the city: ",
     "option": "Please select an option: ",
-    "text": "${index + 1}. ${sight.name} in the street ${sight.adress}"
+    "text": "${index + 1}. ${sight.name} in the street ${sight.adress}.",
+    "error": "Sorry, something wrong with places api."
+  },
+  "error": {
+    "city_error": "Please enter correct city name(no numbers or symbols).",
+    "time_error": "Please enter time in correct format.",
+    "server": "Sorry, something wrong with server, try later."
   }
 }

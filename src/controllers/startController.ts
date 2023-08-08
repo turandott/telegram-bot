@@ -6,10 +6,11 @@ const composer = new Composer<Context>();
 composer.command("start", (ctx: Context) => {
   return ctx.reply(ctx.i18n.t("start.text"));
 });
+
 composer.command("help", (ctx: Context) => {
   let commands = COMMANDS.map(
     (command) => `
-  /${command.command} ${command.description}`
+  /${command.command} ${command.description}`,
   ).join(`\n`);
 
   ctx.replyWithHTML(`
