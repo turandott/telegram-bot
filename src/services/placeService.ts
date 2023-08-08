@@ -1,11 +1,11 @@
 import axios from "axios";
 import dotenv from "dotenv";
-
+import { Place } from "../types";
 dotenv.config();
 
 const key: string = process.env.PLACE_KEY;
 
-async function getCity(city: string, kind: string): Promise<any> {
+async function getCity(city: string, kind: string): Promise<Place[]> {
   try {
     const { lat, lon } = (
       await axios.get(
@@ -28,7 +28,11 @@ async function getCity(city: string, kind: string): Promise<any> {
   }
 }
 
-async function getListOfPlaces(lon: number, lat: number, kind: string) {
+async function getListOfPlaces(
+  lon: number,
+  lat: number,
+  kind: string
+): Promise<string[]> {
   try {
     const response = await axios.get(
       `${process.env.PLACE_API}radius?radius=5000&lon=${lon}&lat=${lat}&kinds=${kind}&rate=1&limit=4&apikey=${process.env.PLACE_KEY}`
@@ -41,7 +45,7 @@ async function getListOfPlaces(lon: number, lat: number, kind: string) {
   }
 }
 
-async function getSight(id) {
+async function getSight(id: string): Promise<Place> {
   const response = await axios.get(
     `${process.env.PLACE_API}xid/${id}?apikey=${process.env.PLACE_KEY}`
   );

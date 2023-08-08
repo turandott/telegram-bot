@@ -1,15 +1,13 @@
 import { Composer, Markup, Scenes, session, Telegraf } from "telegraf";
 import weatherService from "../services/weatherService.js";
 import cron from "node-cron";
-import db from "../models/models.js";
+import db from "../models/index.js";
 const User = db.User;
 const Weather = db.Weather;
-
 
 const stepEnterCity = new Composer<Scenes.WizardContext>();
 const stepEnterTime = new Composer<Scenes.WizardContext>();
 const stepGetWeather = new Composer<Scenes.WizardContext>();
-// const stepFour = new Composer<Scenes.WizardContext>();
 const stepExit = new Composer<Scenes.WizardContext>();
 
 stepEnterCity.on("text", async (ctx: any) => {
@@ -43,11 +41,18 @@ stepGetWeather.hears(/^\d{2}:\d{2}$/, async (ctx: any) => {
     return;
   }
 
-  // Check if the user with the chatId already exists in the database
-  const existingUser = await User.findOne({ where: { chatId: user } });
+  if (!ctx.session.weatherSubscriptions) {
+    ctx.session.weatherSubscriptions = [];
+  }
+  
+  console.log(ctx.session.weatherSubscribtion);
 
-  if (existingUser) {
-    // If the user already exists update information
+  //check if the user with the chatId exists
+  const existingUser = await User.findOne({ where: { chatId: user } });
+  const existingWeather = await Weather.findOne({ where: { id: existingUser.id } });
+
+  if (existingUser && existingWeather) {
+    // user already exists update information
     await Weather.update(
       {
         city: city,
@@ -55,8 +60,18 @@ stepGetWeather.hears(/^\d{2}:\d{2}$/, async (ctx: any) => {
       },
       { where: { id: existingUser.id } }
     );
-  } else {
-    // If the user does not exist
+  }else if(existingUser && !existingWeather){
+
+    await Weather.create(
+      {
+        id: existingUser.id,
+        city: city,
+        time: time,
+      },
+    );
+  }
+   else {
+    //user does not exist
     const newUser = await User.create({
       chatId: user,
     });
@@ -68,21 +83,28 @@ stepGetWeather.hears(/^\d{2}:\d{2}$/, async (ctx: any) => {
     });
   }
 
-  // const job = cron.schedule(`${minutes} ${hours} * * *`, async () => {
-  //   const city = ctx.wizard.state.city;
-  //   const weather = await weatherService.getWeather(city);
-  //   console.log(weather);
-  //   ctx.reply(
-  //     `The weather in ${city} is ${weather.current.condition.text.toLowerCase()}, the temperature is ${
-  //       weather.current.temp_c
-  //     }, wind speed is ${weather.current.wind_mph} mph, humidity is ${
-  //       weather.current.humidity
-  //     } percent.`
-  //   );
-  // });
-  // ctx.wizard.state.cronJob = job;
+  const job = cron.schedule(`${minutes} ${hours} * * *`, async () => {
+    const city = ctx.wizard.state.city;
+    const weather = await weatherService.getWeather(city);
+    console.log(weather);
+    ctx.reply(
+      `The weather in ${city} is ${weather.current.condition.text.toLowerCase()}, the temperature is ${
+        weather.current.temp_c
+      }, wind speed is ${weather.current.wind_mph} mph, humidity is ${
+        weather.current.humidity
+      } percent.`
+    );
+  });
+  ctx.wizard.state.cronJob = job;
+  const subscription = {
+    city: city,
+    weatherSubscription: job,
+    userId: user,
+  };
 
-  // job.start();
+  ctx.session.weatherSubscriptions.push(subscription);
+  console.log(job.options.name);
+  job.start();
 
   return ctx.wizard.next();
 });

@@ -1,9 +1,10 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import { Photo } from "../types";
 
 dotenv.config();
 
-async function getCatImage(): Promise<string> {
+async function getCatImage(): Promise<Photo> {
   try {
     const res = await axios.get(process.env.CAT_API);
     console.log(res.data[0].url);

@@ -13,7 +13,7 @@ const User = sequelize.define("user", {
 
 const Weather = sequelize.define("weather", {
   city: { type: DataTypes.STRING, defaultValue: null },
-  time: { type: DataTypes.DATE, defaultValue: null },
+  time: { type: DataTypes.STRING, defaultValue: null },
 });
 
 const Notion = sequelize.define("notion", {
