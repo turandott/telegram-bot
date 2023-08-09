@@ -5,25 +5,25 @@ const Weather = db.Weather;
 
 export async function userToWetherSubscribe(user, city, time) {
   //check if the user with the chatId exists
-  const existingUser = await User.findOne({ where: { chatId: user } });
+  const existingUser = await User.findOne({ chatId: user });
   let existingWeather;
   if (existingUser) {
     existingWeather = await Weather.findOne({
-      where: { id: existingUser.id },
+      user: existingUser._id,
     });
   }
   if (existingUser && existingWeather) {
     // user already exists update information
-    await Weather.update(
+    await Weather.updateOne(
+      { user: existingUser._id },
       {
         city: city,
         time: time,
       },
-      { where: { id: existingUser.id } },
     );
   } else if (existingUser && !existingWeather) {
     await Weather.create({
-      id: existingUser.id,
+      user: existingUser._id,
       city: city,
       time: time,
     });
@@ -34,7 +34,7 @@ export async function userToWetherSubscribe(user, city, time) {
     });
 
     await Weather.create({
-      userId: newUser.id,
+      user: newUser._id,
       city: city,
       time: time,
     });

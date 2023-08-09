@@ -4,16 +4,18 @@ import { Telegraf, Scenes, session } from "telegraf";
 import { Context } from "./types";
 import controllers from "./controllers";
 import cron from "node-cron";
-import db from "./models/index.js";
+import dbConnection from "./config/db";
+import db from "./models";
+// import db from "./models/index.js";
 import restartWeatherSubscription from "./subscriptions/restartWeatherSubscribtion";
 import { SceneSessionData } from "telegraf/typings/scenes/context.js";
-import sequelize from "./config/db.js";
+// import sequelize from "./config/db.js";
 import TelegrafI18n from "telegraf-i18n";
 import path from "path";
 import { fileURLToPath } from "url";
 import rateLimit from "telegraf-ratelimit";
 import { limitConfig } from "./config/limit";
-
+import mongoose from "./config/db";
 const __filename = fileURLToPath(import.meta.url || "");
 const __dirname = path.dirname(__filename || "");
 const token: string | undefined = process.env.TOKEN;
@@ -42,19 +44,24 @@ bot.use(i18n.middleware());
 bot.use(stage.middleware());
 bot.use(rateLimit(limitConfig));
 
-const start = async () => {
-  try {
-    await sequelize.authenticate();
-    await sequelize.sync();
-    await db.sync();
+dbConnection.on("error", console.error.bind(console, "connection error:"));
+dbConnection.once("open", function () {
+  console.log("Database connected successfully");
+});
+db;
+// const start = async () => {
+//   try {
+//     await sequelize.authenticate();
+//     await sequelize.sync();
+//     await db.sync();
 
-    console.log("U have connected to db");
-  } catch (e) {
-    console.log(`Error ${e.message}`);
-  }
-};
+//     console.log("U have connected to db");
+//   } catch (e) {
+//     console.log(`Error ${e.message}`);
+//   }
+// };
 
-start();
+// start();
 
 function sendMessage(chatId, message) {
   bot.telegram.sendMessage(chatId, message);

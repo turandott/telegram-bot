@@ -1,8 +1,6 @@
 import { Composer, Context, Scenes, session } from "telegraf";
 import db from "../models/index.js";
 import { userToWetherUnsubscribe } from "../models/weatherUnsubscribe.js";
-const User = db.User;
-const Weather = db.Weather;
 
 const stepUnsubscribe = new Composer<Scenes.WizardContext>();
 const stepExit = new Composer<Scenes.WizardContext>();
@@ -12,9 +10,9 @@ stepUnsubscribe.on("text", async (ctx: any) => {
     const userId = ctx.message.chat.id;
     userToWetherUnsubscribe(userId);
 
-    if (ctx.session.state.cronJob) {
-      ctx.state.cronJob.stop();
-      delete ctx.state.cronJob;
+    if (ctx.session.state && ctx.session.state.cronJob) {
+      ctx.session.state.cronJob.stop();
+      delete ctx.session.state.cronJob;
     }
     let subscriptions = ctx.session.weatherSubscriptions || [];
     console.log(ctx.session.weatherSubscriptions);
