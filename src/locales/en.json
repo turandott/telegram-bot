@@ -29,6 +29,20 @@
     "text": "${index + 1}. ${sight.name} in the street ${sight.adress}.",
     "error": "Sorry, something wrong with places api."
   },
+  "task": {
+    "text": "Please, enter the task text",
+    "choose": "Choose the action to tasks",
+    "list": "The list of your tasks",
+    "id": "Choose the number of task wich one you want to delete",
+    "delete_all": "Delete all tasks",
+    "deleted": "The task was deleted successfully!",
+    "created": "The task was created successfully!",
+    "create": "Create",
+    "delete": "Delete",
+    "show_all": "Show all tasks",
+    "exit": "Exit",
+    "bye": "Bye!"
+  },
   "error": {
     "city_error": "Please enter correct city name(no numbers or symbols).",
     "time_error": "Please enter time in correct format.",

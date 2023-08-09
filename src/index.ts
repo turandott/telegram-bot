@@ -31,10 +31,11 @@ const stage = new Scenes.Stage<Scenes.SceneContext>(
     controllers.weatherScene,
     controllers.placesScene,
     controllers.unsubscribeScene,
+    controllers.taskScene,
   ],
   {
     default: "super-wizard",
-  }
+  },
 );
 bot.use(session());
 bot.use(i18n.middleware());
@@ -69,6 +70,10 @@ bot.command("unsubscribe", async (ctx: Context) => {
 
 bot.command("places", async (ctx: Context) => {
   ctx.scene.enter("placesScene");
+});
+
+bot.command("tasks", async (ctx: Context) => {
+  ctx.scene.enter("taskScene");
 });
 
 bot.use(controllers.startController);

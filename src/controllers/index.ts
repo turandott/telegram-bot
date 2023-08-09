@@ -5,6 +5,7 @@ import weatherController from "./weatherController.js";
 import weatherScene from "./subscribeController.js";
 import placesScene from "./placeController.js";
 import unsubscribeScene from "./unsubscribeController.js";
+import taskScene from "./taskController.js";
 
 export default {
   unsubscribeScene,
@@ -14,4 +15,5 @@ export default {
   catController,
   dogController,
   startController,
+  taskScene,
 };
