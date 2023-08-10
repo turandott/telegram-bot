@@ -33,7 +33,7 @@
     "text": "Please, enter the task text",
     "choose": "Choose the action to tasks",
     "list": "The list of your tasks",
-    "id": "Choose the number of task wich one you want to delete",
+    "text_id": "Choose the text of task wich one you want to delete",
     "delete_all": "Delete all tasks",
     "deleted": "The task was deleted successfully!",
     "created": "The task was created successfully!",
