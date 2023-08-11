@@ -39,9 +39,15 @@
     "created": "The task was created successfully!",
     "create": "Create",
     "delete": "Delete",
+    "subscribe": "Subscribe",
+    "subscribed": "You have successfully subscribed from tasks notifications",
+    "unsubscribed": "You have successfully unsubscribed from tasks notifications",
+    "unsubscribe": "Unsubscribe",
+    "time": "Enter the time in HH:MM format for subscription messages: ",
     "show_all": "Show all tasks",
     "exit": "Exit",
-    "bye": "Bye!"
+    "bye": "Bye!",
+    "notification": "It's your notification!"
   },
   "error": {
     "city_error": "Please enter correct city name(no numbers or symbols).",

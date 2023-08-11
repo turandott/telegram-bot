@@ -6,8 +6,6 @@ import { isValidCity } from "../helpers/cityCheckHelper.js";
 import { timeParser } from "../helpers/timeParserHelper.js";
 import { isValidTime } from "../helpers/timeCheckHelper.js";
 import { userToWetherSubscribe } from "../models/weatherSubscribe.js";
-const User = db.User;
-const Weather = db.Weather;
 
 const stepEnterCity = new Composer<Scenes.WizardContext>();
 const stepEnterTime = new Composer<Scenes.WizardContext>();
@@ -34,7 +32,7 @@ stepEnterTime.on("text", async (ctx: any) => {
     return ctx.wizard.next();
   } catch (error) {
     console.log(error);
-    await ctx.reply(ctx.i18n.t("error.city_error")); // Update the error message to "invalid_city"
+    await ctx.reply(ctx.i18n.t("error.city_error"));
   }
 });
 

@@ -16,47 +16,21 @@ const taskSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
+const taskSubscribeSchema = new mongoose.Schema({
+  time: { type: String, default: null },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+});
+
 const User = mongoose.model("User", userSchema);
 const Weather = mongoose.model("Weather", weatherSchema);
 const Task = mongoose.model("Task", taskSchema);
+const TaskSubscribe = mongoose.model("TaskSubscribe", taskSubscribeSchema);
 
 const db = {
   User,
   Weather,
   Task,
+  TaskSubscribe,
 };
 
 export default db;
-
-// import sequelize from "../config/db.js";
-// import DataTypes from "sequelize";
-
-// const User = sequelize.define("user", {
-//   id: {
-//     type: DataTypes.INTEGER,
-//     primaryKey: true,
-//     unique: true,
-//     autoIncrement: true,
-//   },
-//   chatId: { type: DataTypes.STRING, unique: true },
-// });
-
-// const Weather = sequelize.define("weather", {
-//   city: { type: DataTypes.STRING, defaultValue: null },
-//   time: { type: DataTypes.STRING, defaultValue: null },
-// });
-
-// const Notion = sequelize.define("notion", {
-//   text: { type: DataTypes.STRING, defaultValue: null },
-// });
-
-// User.hasMany(Notion, { foreignKey: "user_id" });
-// User.hasOne(Weather, { foreignKey: "user_id" });
-
-// const db: any = {
-//   User,
-//   Weather,
-//   Notion,
-// };
-
-// export default db;
