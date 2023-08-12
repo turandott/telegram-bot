@@ -15,7 +15,6 @@ stepUnsubscribe.on("text", async (ctx: any) => {
       delete ctx.session.state.cronJob;
     }
     let subscriptions = ctx.session.weatherSubscriptions || [];
-    console.log(ctx.session.weatherSubscriptions);
 
     subscriptions.forEach((subscription: any) => {
       if (

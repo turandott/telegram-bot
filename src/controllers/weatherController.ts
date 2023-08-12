@@ -1,8 +1,8 @@
 import { Composer } from "telegraf";
 import { Context } from "../types/index.js";
 import weatherService from "../services/weatherService.js";
-import { getWeatherResponse } from "../services/responseWeatherService.js";
-import { isValidCity } from "../helpers/cityCheckHelper.js";
+import { getWeatherResponse } from "../helpers/weatherShow.js";
+import { isValidCity } from "../helpers/cityCheck.js";
 const composer = new Composer<Context>();
 
 composer.command("weather", (ctx: Context) => {
@@ -17,6 +17,7 @@ composer.on("text", async (ctx) => {
   }
   try {
     const weatherResponse = await getWeatherResponse(city);
+    console.log(weatherResponse);
     console.log(weatherResponse);
     return ctx.reply(weatherResponse);
   } catch (error) {

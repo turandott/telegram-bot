@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import { getWeatherResponse } from "../services/responseWeatherService.js";
+import { getWeatherResponse } from "../helpers/weatherShow.js";
 import db from "../models/index.js";
 import cron from "node-cron";
 const User = db.User;

@@ -1,17 +1,15 @@
 import axios from "axios";
-import dotenv from "dotenv";
 import { Place } from "../types";
-dotenv.config();
-
-const key: string = process.env.PLACE_KEY;
+import { PLACE_API, PLACE_KEY } from "../config/env.config";
 
 async function getCity(city: string, kind: string): Promise<Place[]> {
   try {
-    const { lat, lon } = (
-      await axios.get(
-        `${process.env.PLACE_API}geoname?name=${city}&apikey=${process.env.PLACE_KEY}`
-      )
-    ).data;
+    let { lat, lon } = await getLocation(city);
+
+    if (!lat || !lon) {
+      throw new Error("NoCity");
+    }
+
     const placesId = await getListOfPlaces(lon, lat, kind);
     let sights = [];
 
@@ -23,7 +21,23 @@ async function getCity(city: string, kind: string): Promise<Place[]> {
     console.log(sights);
     return sights;
   } catch (error) {
+    if (error.message === "NoCity") {
+      console.log("Location not found.");
+    }
     console.error("Error fetching:", error);
+    throw error;
+  }
+}
+
+async function getLocation(city: string) {
+  try {
+    const { lat, lon } = (
+      await axios.get(`${PLACE_API}geoname?name=${city}&apikey=${PLACE_KEY}`)
+    ).data;
+
+    return { lat, lon };
+  } catch (error) {
+    console.log("No location found");
     throw error;
   }
 }
@@ -31,11 +45,11 @@ async function getCity(city: string, kind: string): Promise<Place[]> {
 async function getListOfPlaces(
   lon: number,
   lat: number,
-  kind: string
+  kind: string,
 ): Promise<string[]> {
   try {
     const response = await axios.get(
-      `${process.env.PLACE_API}radius?radius=5000&lon=${lon}&lat=${lat}&kinds=${kind}&rate=1&limit=4&apikey=${process.env.PLACE_KEY}`
+      `${PLACE_API}radius?radius=5000&lon=${lon}&lat=${lat}&kinds=${kind}&rate=1&limit=4&apikey=${PLACE_KEY}`,
     );
     const places = response.data.features.map((feature) => feature.id);
     return places;
@@ -46,9 +60,7 @@ async function getListOfPlaces(
 }
 
 async function getSight(id: string): Promise<Place> {
-  const response = await axios.get(
-    `${process.env.PLACE_API}xid/${id}?apikey=${process.env.PLACE_KEY}`
-  );
+  const response = await axios.get(`${PLACE_API}xid/${id}?apikey=${PLACE_KEY}`);
   const sight = response.data;
   const info = {
     name: sight.name,
@@ -57,4 +69,4 @@ async function getSight(id: string): Promise<Place> {
   return info;
 }
 
-export default { getCity };
+export default { getCity, getLocation };

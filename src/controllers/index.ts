@@ -4,11 +4,11 @@ import catController from "./catController.js";
 import weatherController from "./weatherController.js";
 import weatherScene from "./subscribeController.js";
 import placesScene from "./placeController.js";
-import unsubscribeScene from "./unsubscribeController.js";
+import unsubscribeWeatherScene from "./unsubscribeWeatherController.js";
 import taskScene from "./taskController.js";
 
 export default {
-  unsubscribeScene,
+  unsubscribeWeatherScene,
   placesScene,
   weatherController,
   weatherScene,

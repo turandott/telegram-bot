@@ -26,21 +26,21 @@
   "place": {
     "city": "Enter the city: ",
     "option": "Please select an option: ",
-    "text": "${index + 1}. ${sight.name} in the street ${sight.adress}.",
+    "text": "✨ ${sight.name} in the street ${sight.adress}.",
     "error": "Sorry, something wrong with places api."
   },
   "task": {
     "text": "Please, enter the task text",
     "choose": "Choose the action to tasks",
     "list": "The list of your tasks",
-    "text_id": "Choose the text of task wich one you want to delete",
+    "text_id": "Choose the number of task wich one you want to delete",
     "delete_all": "Delete all tasks",
     "deleted": "The task was deleted successfully!",
     "created": "The task was created successfully!",
     "create": "Create",
     "delete": "Delete",
     "subscribe": "Subscribe",
-    "subscribed": "You have successfully subscribed from tasks notifications",
+    "subscribed": "You have successfully subscribed to tasks notifications",
     "unsubscribed": "You have successfully unsubscribed from tasks notifications",
     "unsubscribe": "Unsubscribe",
     "time": "Enter the time in HH:MM format for subscription messages: ",
@@ -52,6 +52,8 @@
   "error": {
     "city_error": "Please enter correct city name(no numbers or symbols).",
     "time_error": "Please enter time in correct format.",
-    "server": "Sorry, something wrong with server, try later."
+    "server": "Sorry, something wrong with server, try later.",
+    "no_city": "Sorry, server can't find your city(",
+    "no_task": "You have no tasks :("
   }
 }

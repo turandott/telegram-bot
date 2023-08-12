@@ -1,8 +1,6 @@
-import mongoose from "mongoose";
-import { getWeatherResponse } from "../services/responseWeatherService.js";
 import db from "../models/index.js";
 import cron from "node-cron";
-import { showTaskHelper } from "../helpers/taskShowHelper.js";
+import { showTask } from "../helpers/taskShow.js";
 const User = db.User;
 const TaskSubscribe = db.TaskSubscribe;
 const Task = db.Task;
@@ -10,10 +8,8 @@ const Task = db.Task;
 async function restartTaskSubscription(sendMessage) {
   try {
     const users = await User.find({}).select("id chatId");
-    // console.log(users);
     for (const user of users) {
       const { id, chatId } = user;
-      //   console.log(id, chatId);
       const subscribe = await TaskSubscribe.findOne({
         user: id,
       });
@@ -33,7 +29,7 @@ async function restartTaskSubscription(sendMessage) {
           let taskTexts = tasks.map((task) => task.text);
           console.log(taskTexts);
 
-          let receivedTasks = await showTaskHelper(taskTexts);
+          let receivedTasks = await showTask(taskTexts);
           sendMessage(chatId, receivedTasks);
         });
 

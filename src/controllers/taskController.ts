@@ -5,9 +5,9 @@ import { showTasks } from "../models/showTasks.js";
 import { deleteTask } from "../models/deleteTask.js";
 import { userToTaskSubscribe } from "../models/taskSubscribe.js";
 import { userToTaskUnsubscribe } from "../models/taskUnsubscribe.js";
-import { timeParser } from "../helpers/timeParserHelper.js";
-import { isValidTime } from "../helpers/timeCheckHelper.js";
+import timeCheck from "../helpers/timeCheck.js";
 import cron from "node-cron";
+import { showTask } from "../helpers/taskShow.js";
 
 const stepChooseVariant = new Composer<Scenes.WizardContext>();
 const stepCreateTask = new Composer<Scenes.WizardContext>();
@@ -16,11 +16,7 @@ const stepExit = new Composer<Scenes.WizardContext>();
 const stepSubscribeTask = new Composer<Scenes.WizardContext>();
 
 stepChooseVariant.on("text", async (ctx: any) => {
-  const userChoice = ctx.message.text.toLowerCase();
   ctx.session.user = ctx.from.id;
-  console.log(ctx.from.id);
-
-  console.log(userChoice);
   await ctx.replyWithHTML(
     ctx.i18n.t("task.choose"),
     Markup.inlineKeyboard([
@@ -41,6 +37,19 @@ stepChooseVariant.action("create", async (ctx: any) => {
 
 stepChooseVariant.action("delete", async (ctx: any) => {
   await ctx.reply(ctx.i18n.t("task.text_id"));
+  const userId = ctx.session.user;
+
+  let tasks = await showTasks(userId);
+  if (!tasks) {
+    await ctx.reply(ctx.i18n.t("error.no_task"));
+    return ctx.wizard.selectStep(0);
+  }
+
+  let [tasksMap, reply] = await showTask(tasks);
+
+  ctx.wizard.state.tasks = tasksMap;
+
+  await ctx.reply(reply);
   return ctx.wizard.selectStep(2);
 });
 
@@ -49,10 +58,11 @@ stepChooseVariant.action("show_all", async (ctx: any) => {
   console.log(userId);
   let tasks = await showTasks(userId);
   if (!tasks) {
-    await ctx.reply("You have no tasks :(");
+    await ctx.reply(ctx.i18n.t("error.no_task"));
     return ctx.wizard.selectStep(0);
   }
-  const reply = "Your tasks:\n\n" + tasks.join("\n");
+  let [task, reply] = await showTask(tasks);
+
   await ctx.reply(reply);
   return ctx.wizard.selectStep(0);
 });
@@ -88,7 +98,6 @@ stepChooseVariant.action("unsubscribe", async (ctx: any) => {
   });
 
   subscriptions = subscriptions.filter((subscription: any) => {
-    console.log(subscription);
     return subscription.userId !== user;
   });
   ctx.session.taskSubscriptions = subscriptions;
@@ -106,9 +115,14 @@ stepCreateTask.on("text", async (ctx: any) => {
 });
 
 stepDeleteTask.on("text", async (ctx: any) => {
-  const text = await ctx.message.text;
+  const number = await ctx.message.text;
   const userId = await ctx.session.user;
-  console.log(text, userId);
+  let tasks = ctx.wizard.state.tasks;
+  console.log(number);
+  console.log(tasks);
+
+  let text = tasks.get(Number(number));
+  console.log(text);
   const result = await deleteTask(userId, text);
   await ctx.reply(result);
   return ctx.scene.reenter();
@@ -118,27 +132,29 @@ stepSubscribeTask.on("text", async (ctx: any) => {
   const time = ctx.message.text;
   const user = ctx.session.user;
   try {
-    if (isValidTime(time)) {
-      const [hours, minutes] = timeParser(time);
+    if (timeCheck.isValidTime(time)) {
+      const [hours, minutes] = timeCheck.timeParser(time);
       await ctx.reply(ctx.i18n.t("weather.your_time", { time }));
 
       if (!ctx.session.taskSubscriptions) {
         ctx.session.taskSubscriptions = [];
       }
 
-      const subscribe = await userToTaskSubscribe(user, time);
+      await userToTaskSubscribe(user, time);
+
       let tasks = await showTasks(user);
-      if (!tasks) {
-        await ctx.reply("You have no tasks :(");
+
+      if (!tasks.length) {
+        await ctx.reply(ctx.i18n.t("error.no_task"));
         return ctx.wizard.selectStep(0);
       }
-      const reply = "Your tasks:\n\n" + tasks.join("\n");
 
       const job = cron.schedule(`${minutes} ${hours} * * *`, async () => {
+        const updatedTasks = await showTasks(user);
+        const reply = "Your tasks:\n\n" + updatedTasks.join("\n");
         ctx.reply(reply);
       });
 
-      console.log(reply);
       ctx.wizard.state.cronJob = job;
       const subscription = {
         taskSubscriptions: job,
@@ -147,16 +163,14 @@ stepSubscribeTask.on("text", async (ctx: any) => {
 
       ctx.session.taskSubscriptions.push(subscription);
       job.start();
-
       await ctx.reply(ctx.i18n.t("task.subscribed"));
-
       return ctx.scene.reenter();
     } else {
       await ctx.reply(ctx.i18n.t("error.time_error"));
       return ctx.scene.reenter();
     }
   } catch (err) {
-    ctx.reply(ctx.i18n.t("error.time_error"));
+    ctx.reply(ctx.i18n.t("error.server"));
     return ctx.scene.reenter();
   }
 });
