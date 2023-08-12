@@ -76,11 +76,11 @@ stepGetWeather.on("text", async (ctx: any) => {
   }
 });
 
-const weatherScene = new Scenes.WizardScene(
-  "weatherScene",
+const weatherSubscribeScene = new Scenes.WizardScene(
+  "weatherSubscribeScene",
   stepEnterCity,
   stepEnterTime,
   stepGetWeather,
 );
 
-export default weatherScene;
+export default weatherSubscribeScene;

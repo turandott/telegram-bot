@@ -1,15 +1,16 @@
-import { Composer } from "telegraf";
-import { Context } from "../types/index.js";
-import weatherService from "../services/weatherService.js";
+import { Composer, Scenes } from "telegraf";
 import { getWeatherResponse } from "../helpers/weatherShow.js";
 import { isValidCity } from "../helpers/cityCheck.js";
-const composer = new Composer<Context>();
 
-composer.command("weather", (ctx: Context) => {
-  ctx.reply(ctx.i18n.t("weather.city"));
+const stepEnterCity = new Composer<Scenes.WizardContext>();
+const stepWeather = new Composer<Scenes.WizardContext>();
+
+stepEnterCity.on("text", async (ctx: any) => {
+  await ctx.reply(ctx.i18n.t("weather.city"));
+  return ctx.wizard.next();
 });
 
-composer.on("text", async (ctx) => {
+stepWeather.on("text", async (ctx: any) => {
   const city: string = ctx.message.text;
 
   if (!isValidCity(city)) {
@@ -19,11 +20,19 @@ composer.on("text", async (ctx) => {
     const weatherResponse = await getWeatherResponse(city);
     console.log(weatherResponse);
     console.log(weatherResponse);
-    return ctx.reply(weatherResponse);
+    await ctx.reply(weatherResponse);
+    return ctx.scene.leave();
   } catch (error) {
     console.log(`error occure with weather: ${error}`);
-    return ctx.reply(ctx.i18n.t("weather.error"));
+    await ctx.reply(ctx.i18n.t("weather.error"));
+    return ctx.scene.leave();
   }
 });
 
-export default composer;
+const weatherScene = new Scenes.WizardScene(
+  "weatherScene",
+  stepEnterCity,
+  stepWeather,
+);
+
+export default weatherScene;

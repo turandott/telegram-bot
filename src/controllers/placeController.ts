@@ -6,7 +6,6 @@ import { isValidCity } from "../helpers/cityCheck.js";
 const stepEnterCity = new Composer<Scenes.WizardContext>();
 const stepKind = new Composer<Scenes.WizardContext>();
 const stepShow = new Composer<Scenes.WizardContext>();
-const stepExit = new Composer<Scenes.WizardContext>();
 
 stepEnterCity.on("text", async (ctx: any) => {
   try {

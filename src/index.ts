@@ -16,10 +16,11 @@ const bot: Telegraf<Context> = new Telegraf(token);
 
 const stage = new Scenes.Stage<Scenes.SceneContext>(
   [
-    controllers.weatherScene,
+    controllers.weatherSubscribeScene,
     controllers.placesScene,
     controllers.unsubscribeWeatherScene,
     controllers.taskScene,
+    controllers.weatherScene,
   ],
   {
     default: "super-wizard",
@@ -51,11 +52,16 @@ bot.command("places", async (ctx: Context) => {
 bot.command("tasks", async (ctx: Context) => {
   ctx.scene.enter("taskScene");
 });
-
+bot.command("weather", async (ctx: Context) => {
+  ctx.scene.enter("weatherScene");
+});
 bot.use(controllers.startController);
 bot.use(controllers.dogController);
 bot.use(controllers.catController);
-bot.use(controllers.weatherController);
+
+bot.on("message", (ctx) =>
+  ctx.reply("No such command, try /help to see the list of commands"),
+);
 
 restartWeatherSubscription(sendMessage);
 restartTaskSubscription(sendMessage);
