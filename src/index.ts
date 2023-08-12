@@ -19,8 +19,14 @@ const stage = new Scenes.Stage<Scenes.SceneContext>(
     controllers.weatherSubscribeScene,
     controllers.placesScene,
     controllers.unsubscribeWeatherScene,
-    controllers.taskScene,
     controllers.weatherScene,
+    controllers.taskScene,
+    controllers.taskCreateScene,
+    controllers.taskShowScene,
+    controllers.taskDeleteScene,
+    controllers.taskSubscribeScene,
+    controllers.taskUnsubscribeScene,
+    controllers.taskExitScene,
   ],
   {
     default: "super-wizard",
@@ -52,9 +58,11 @@ bot.command("places", async (ctx: Context) => {
 bot.command("tasks", async (ctx: Context) => {
   ctx.scene.enter("taskScene");
 });
+
 bot.command("weather", async (ctx: Context) => {
   ctx.scene.enter("weatherScene");
 });
+
 bot.use(controllers.startController);
 bot.use(controllers.dogController);
 bot.use(controllers.catController);

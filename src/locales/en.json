@@ -52,7 +52,7 @@
   "error": {
     "city_error": "Please enter correct city name(no numbers or symbols).",
     "time_error": "Please enter time in correct format.",
-    "server": "Sorry, something wrong with server, try later.",
+    "server": "Sorry, something wrong with server or you just prevent the scene).",
     "no_city": "Sorry, server can't find your city(",
     "no_task": "You have no tasks :("
   }
