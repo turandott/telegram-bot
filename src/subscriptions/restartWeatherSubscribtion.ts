@@ -1,12 +1,14 @@
-import { getWeatherResponse } from "../helpers/weatherShow.js";
-import db from "../models/index.js";
-import cron from "node-cron";
-const User = db.User;
-const Weather = db.Weather;
+import cron from 'node-cron';
+
+import { getWeatherResponse } from '../helpers/weatherShow.js';
+import db from '../models/index.js';
+
+const { User } = db;
+const { Weather } = db;
 
 async function restartWeatherSubscription(sendMessage) {
   try {
-    const users = await User.find({}).select("id chatId");
+    const users = await User.find({}).select('id chatId');
     for (const user of users) {
       const { id, chatId } = user;
       console.log(id, chatId);
@@ -17,7 +19,7 @@ async function restartWeatherSubscription(sendMessage) {
 
       if (weather && weather.time) {
         const { time, city } = weather;
-        const [hours, minutes] = time.split(":");
+        const [hours, minutes] = time.split(':');
         const cronTime = `${parseInt(minutes)} ${parseInt(hours)} * * *`;
 
         cron.schedule(cronTime, async () => {
@@ -31,7 +33,7 @@ async function restartWeatherSubscription(sendMessage) {
       }
     }
   } catch (error) {
-    console.error("Error occurred:", error);
+    console.error('Error occurred:', error);
   }
 }
 

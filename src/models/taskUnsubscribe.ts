@@ -1,22 +1,24 @@
-import cron from "node-cron";
-import db from "./index.js";
-const User = db.User;
-const Task = db.Task;
-const TaskSubscribe = db.TaskSubscribe;
+import cron from 'node-cron';
+
+import db from './index.js';
+
+const { User } = db;
+const { Task } = db;
+const { TaskSubscribe } = db;
 
 export async function userToTaskUnsubscribe(user) {
   const existingUser = await User.findOne({ chatId: user });
   if (!existingUser) {
-    return "You have no tasks";
+    return 'You have no tasks';
   }
   const existingSubscription = await TaskSubscribe.findOne({
     user: existingUser._id,
   });
 
   if (!existingSubscription) {
-    return "You have no subscription";
+    return 'You have no subscription';
   }
   await TaskSubscribe.deleteOne({ user: existingUser._id });
 
-  return "Unsubscribed tasks successfully";
+  return 'Unsubscribed tasks successfully';
 }

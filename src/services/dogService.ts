@@ -1,6 +1,7 @@
-import axios from "axios";
-import { Photo } from "../types";
-import { DOG_API } from "../config/env.config";
+import axios from 'axios';
+
+import { DOG_API } from '../config/env.config';
+import { Photo } from '../types';
 
 async function getDogImage(): Promise<Photo> {
   try {
@@ -8,7 +9,7 @@ async function getDogImage(): Promise<Photo> {
     const imageUrl = response.data[0].url;
     return imageUrl;
   } catch (error) {
-    console.error("Error fetching dog image:", error);
+    console.error('Error fetching dog image:', error);
     throw error;
   }
 }

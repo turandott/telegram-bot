@@ -1,4 +1,4 @@
-import weatherService from "../services/weatherService";
+import weatherService from '../services/weatherService';
 
 export const getWeatherResponse = async (city: string): Promise<string> => {
   try {
@@ -9,6 +9,6 @@ export const getWeatherResponse = async (city: string): Promise<string> => {
       weather.humidity
     } percent.`;
   } catch (error) {
-    throw new Error("City not found. Please enter a valid city name.");
+    throw new Error('City not found. Please enter a valid city name.');
   }
 };

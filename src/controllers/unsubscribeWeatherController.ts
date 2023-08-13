@@ -1,11 +1,11 @@
-import { Composer, Context, Scenes, session } from "telegraf";
-import db from "../models/index.js";
-import { userToWetherUnsubscribe } from "../models/weatherUnsubscribe.js";
+import { Composer, Scenes } from 'telegraf';
+
+import { userToWetherUnsubscribe } from '../models/weatherUnsubscribe.js';
 
 const stepUnsubscribe = new Composer<Scenes.WizardContext>();
 const stepExit = new Composer<Scenes.WizardContext>();
 
-stepUnsubscribe.on("text", async (ctx: any) => {
+stepUnsubscribe.on('text', async (ctx: any) => {
   try {
     const userId = ctx.message.chat.id;
     userToWetherUnsubscribe(userId);
@@ -32,16 +32,16 @@ stepUnsubscribe.on("text", async (ctx: any) => {
     });
 
     ctx.session.weatherSubscriptions = subscriptions;
-    ctx.reply(ctx.i18n.t("unsubscribe.text"));
+    ctx.reply(ctx.i18n.t('unsubscribe.text'));
     ctx.scene.leave();
   } catch (error) {
     console.log(error);
-    await ctx.reply(ctx.i18n.t("error.sever"));
+    await ctx.reply(ctx.i18n.t('error.sever'));
   }
 });
 
 const unsubscribeScene = new Scenes.WizardScene(
-  "unsubscribeScene",
+  'unsubscribeScene',
   stepUnsubscribe,
 );
 

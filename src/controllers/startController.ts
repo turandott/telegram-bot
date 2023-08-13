@@ -1,20 +1,20 @@
-import { Composer } from "telegraf";
-import COMMANDS from "../utils/consts.js";
-import { Context } from "../types/index.js";
+import { Composer } from 'telegraf';
+
+import { Context } from '../types/index.js';
+import COMMANDS from '../utils/consts.js';
+
 const composer = new Composer<Context>();
 
-composer.command("start", (ctx: Context) => {
-  return ctx.reply(ctx.i18n.t("start.text"));
-});
+composer.command('start', (ctx: Context) => ctx.reply(ctx.i18n.t('start.text')));
 
-composer.command("help", (ctx: Context) => {
-  let commands = COMMANDS.map(
+composer.command('help', (ctx: Context) => {
+  const commands = COMMANDS.map(
     (command) => `
   /${command.command} ${command.description}`,
-  ).join(`\n`);
+  ).join('\n');
 
   ctx.replyWithHTML(`
-  ${ctx.i18n.t("start.help")}
+  ${ctx.i18n.t('start.help')}
   ${commands}
   `);
 });

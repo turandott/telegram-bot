@@ -1,6 +1,7 @@
-import db from "./index.js";
-const User = db.User;
-const Weather = db.Weather;
+import db from './index.js';
+
+const { User } = db;
+const { Weather } = db;
 
 export async function userToWetherUnsubscribe(userId) {
   const existingUser = await User.findOne({ chatId: userId });

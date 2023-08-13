@@ -1,17 +1,18 @@
-import axios from "axios";
-import { Place } from "../types";
-import { PLACE_API, PLACE_KEY } from "../config/env.config";
+import axios from 'axios';
+
+import { PLACE_API, PLACE_KEY } from '../config/env.config';
+import { Place } from '../types';
 
 async function getCity(city: string, kind: string): Promise<Place[]> {
   try {
-    let { lat, lon } = await getLocation(city);
+    const { lat, lon } = await getLocation(city);
 
     if (!lat || !lon) {
-      throw new Error("NoCity");
+      throw new Error('NoCity');
     }
 
     const placesId = await getListOfPlaces(lon, lat, kind);
-    let sights = [];
+    const sights = [];
 
     for (const placeId of placesId) {
       const sight = await getSight(placeId);
@@ -21,10 +22,10 @@ async function getCity(city: string, kind: string): Promise<Place[]> {
     console.log(sights);
     return sights;
   } catch (error) {
-    if (error.message === "NoCity") {
-      console.log("Location not found.");
+    if (error.message === 'NoCity') {
+      console.log('Location not found.');
     }
-    console.error("Error fetching:", error);
+    console.error('Error fetching:', error);
     throw error;
   }
 }
@@ -37,7 +38,7 @@ async function getLocation(city: string) {
 
     return { lat, lon };
   } catch (error) {
-    console.log("No location found");
+    console.log('No location found');
     throw error;
   }
 }
@@ -54,7 +55,7 @@ async function getListOfPlaces(
     const places = response.data.features.map((feature) => feature.id);
     return places;
   } catch (error) {
-    console.error("Error fetching:", error);
+    console.error('Error fetching:', error);
     throw error;
   }
 }

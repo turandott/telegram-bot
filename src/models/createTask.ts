@@ -1,8 +1,10 @@
-import cron from "node-cron";
-import db from "./index.js";
-const User = db.User;
-const Weather = db.Weather;
-const Task = db.Task;
+import cron from 'node-cron';
+
+import db from './index.js';
+
+const { User } = db;
+const { Weather } = db;
+const { Task } = db;
 
 export async function createTask(user, text) {
   let existingUser = await User.findOne({ chatId: user });
@@ -13,6 +15,6 @@ export async function createTask(user, text) {
   }
   await Task.create({
     user: existingUser._id,
-    text: text,
+    text,
   });
 }

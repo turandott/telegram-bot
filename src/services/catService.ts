@@ -1,6 +1,7 @@
-import axios from "axios";
-import { Photo } from "../types";
-import { CAT_API } from "../config/env.config";
+import axios from 'axios';
+
+import { CAT_API } from '../config/env.config';
+import { Photo } from '../types';
 
 async function getCatImage(): Promise<Photo> {
   try {
@@ -8,7 +9,7 @@ async function getCatImage(): Promise<Photo> {
     console.log(res.data[0].url);
     return res.data[0].url;
   } catch (error) {
-    console.error("Error fetching cat image:", error);
+    console.error('Error fetching cat image:', error);
     throw error;
   }
 }
