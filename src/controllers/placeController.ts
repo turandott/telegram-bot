@@ -23,6 +23,11 @@ stepKind.on("text", async (ctx: any) => {
     ctx.wizard.state.city = city;
     const location = await placeService.getLocation(city);
 
+    if (city === "/exit") {
+      await ctx.reply(ctx.i18n.t("dialog.exit"));
+      return ctx.scene.leave();
+    }
+
     if (location.lat === undefined || location.lon === undefined) {
       ctx.reply(ctx.i18n.t("error.no_city"));
       return ctx.scene.leave();
@@ -57,6 +62,12 @@ stepShow.on("text", async (ctx: any) => {
   try {
     const city = ctx.wizard.state.city;
     const text = ctx.message.text;
+
+    if (text === "/exit") {
+      await ctx.reply(ctx.i18n.t("dialog.exit"));
+      return ctx.scene.leave();
+    }
+
     const kind = text.toLowerCase().replace(/ /g, "_");
     const sights = await placeService.getCity(city, kind);
 

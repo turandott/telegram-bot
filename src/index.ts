@@ -44,7 +44,7 @@ function sendMessage(chatId, message) {
 }
 
 bot.command("subscribe", async (ctx: Context) => {
-  ctx.scene.enter("weatherScene");
+  ctx.scene.enter("weatherSubscribeScene");
 });
 
 bot.command("unsubscribe", async (ctx: Context) => {
@@ -67,9 +67,7 @@ bot.use(controllers.startController);
 bot.use(controllers.dogController);
 bot.use(controllers.catController);
 
-bot.on("message", (ctx) =>
-  ctx.reply("No such command, try /help to see the list of commands"),
-);
+bot.on("message", (ctx) => ctx.reply(ctx.i18n.t("start.no_command")));
 
 restartWeatherSubscription(sendMessage);
 restartTaskSubscription(sendMessage);

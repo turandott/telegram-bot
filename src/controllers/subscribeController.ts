@@ -19,6 +19,11 @@ stepEnterTime.on("text", async (ctx: any) => {
     const city = ctx.message.text;
     const user = ctx.message.chat.id;
 
+    if (city === "/exit") {
+      await ctx.reply(ctx.i18n.t("dialog.exit"));
+      return ctx.scene.leave();
+    }
+
     if (!isValidCity(city)) {
       return ctx.reply(ctx.i18n.t("error.city_error"));
     }
@@ -40,6 +45,12 @@ stepGetWeather.on("text", async (ctx: any) => {
     const user = ctx.wizard.state.user;
 
     let time = ctx.message.text;
+
+    if (time === "/exit") {
+      await ctx.reply(ctx.i18n.t("dialog.exit"));
+      return ctx.scene.leave();
+    }
+
     ctx.wizard.state.time = time;
 
     if (timeCheck.isValidTime(time)) {

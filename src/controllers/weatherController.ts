@@ -13,6 +13,11 @@ stepEnterCity.on("text", async (ctx: any) => {
 stepWeather.on("text", async (ctx: any) => {
   const city: string = ctx.message.text;
 
+  if (city === "/exit") {
+    await ctx.reply(ctx.i18n.t("dialog.exit"));
+    return ctx.scene.leave();
+  }
+
   if (!isValidCity(city)) {
     return ctx.reply(ctx.i18n.t("error.city_error"));
   }
@@ -23,8 +28,8 @@ stepWeather.on("text", async (ctx: any) => {
     await ctx.reply(weatherResponse);
     return ctx.scene.leave();
   } catch (error) {
-    console.log(`error occure with weather: ${error}`);
-    await ctx.reply(ctx.i18n.t("weather.error"));
+    await ctx.reply(ctx.i18n.t("error.no_city"));
+    // await ctx.reply(ctx.i18n.t("weather.error"));
     return ctx.scene.leave();
   }
 });

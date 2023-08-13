@@ -2,7 +2,7 @@ import db from "../models";
 import mongoose, { ConnectOptions } from "mongoose";
 import { DATA_BASE } from "./env.config";
 
-mongoose
+const dbConnection = mongoose
   .connect(DATA_BASE || "http://localhost:8000", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -15,12 +15,12 @@ mongoose
     console.log("Error Connectiong to the Database");
   });
 
-const dbConnection = mongoose.connection;
+// const  = mongoose.connection;
 
-dbConnection.on("error", console.error.bind(console, "connection error:"));
-dbConnection.once("open", function () {
-  console.log("Database connected successfully");
-});
+// dbConnection.on("error", console.error.bind(console, "connection error:"));
+// dbConnection.once("open", function () {
+//   console.log("Database connected successfully");
+// });
 db;
 
 export default dbConnection;
