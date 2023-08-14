@@ -72,4 +72,8 @@ bot.on('message', (ctx) => ctx.reply(ctx.i18n.t('start.no_command')));
 
 restartWeatherSubscription(sendMessage);
 restartTaskSubscription(sendMessage);
+
 bot.launch();
+
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));

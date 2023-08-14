@@ -15,6 +15,7 @@ const taskSubscribeScene = new Scenes.WizardScene(
     try {
       const time = ctx.message.text;
       const { user } = ctx.session;
+
       if (timeCheck.isValidTime(time)) {
         const [hours, minutes] = timeCheck.timeParser(time);
         await ctx.reply(ctx.i18n.t('weather.your_time', { time }));

@@ -8,7 +8,6 @@ const composer = new Composer<Context>();
 composer.command('dog', async (ctx: Context) => {
   try {
     const data = await dogService.getDogImage();
-    console.log(data);
     return await ctx.replyWithPhoto(data);
   } catch (error) {
     console.log(`error occure with dog image: ${error}`);

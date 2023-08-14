@@ -24,13 +24,10 @@ stepWeather.on('text', async (ctx: any) => {
   }
   try {
     const weatherResponse = await getWeatherResponse(city);
-    console.log(weatherResponse);
-    console.log(weatherResponse);
     await ctx.reply(weatherResponse);
     return ctx.scene.leave();
   } catch (error) {
     await ctx.reply(ctx.i18n.t('error.no_city'));
-    // await ctx.reply(ctx.i18n.t("weather.error"));
     return ctx.scene.leave();
   }
 });

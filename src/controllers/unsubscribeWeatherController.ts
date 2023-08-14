@@ -3,7 +3,6 @@ import { Composer, Scenes } from 'telegraf';
 import { userToWetherUnsubscribe } from '../models/weatherUnsubscribe.js';
 
 const stepUnsubscribe = new Composer<Scenes.WizardContext>();
-const stepExit = new Composer<Scenes.WizardContext>();
 
 stepUnsubscribe.on('text', async (ctx: any) => {
   try {
@@ -27,7 +26,6 @@ stepUnsubscribe.on('text', async (ctx: any) => {
     });
 
     subscriptions = subscriptions.filter((subscription: any) => {
-      console.log(subscription);
       return subscription.userId !== userId;
     });
 

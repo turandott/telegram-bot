@@ -8,7 +8,6 @@ const composer = new Composer<Context>();
 composer.command('cat', async (ctx: Context) => {
   try {
     const data = await catService.getCatImage();
-    console.log(data);
     return await ctx.replyWithPhoto(data);
   } catch (error) {
     console.log(`error occure with cat image: ${error}`);

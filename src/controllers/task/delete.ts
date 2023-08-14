@@ -11,6 +11,7 @@ const taskDeleteScene = new Scenes.WizardScene(
     const userId = ctx.session.user;
 
     const tasks = await showTasks(userId);
+
     if (!tasks) {
       await ctx.reply(ctx.i18n.t('error.no_task'));
       return ctx.wizard.selectStep(0);
@@ -28,12 +29,10 @@ const taskDeleteScene = new Scenes.WizardScene(
       const number = await ctx.message.text;
       const userId = await ctx.session.user;
       const { tasks } = ctx.wizard.state;
-      console.log(number);
-      console.log(tasks);
 
       const text = tasks.get(Number(number));
-      console.log(text);
       const result = await deleteTask(userId, text);
+
       await ctx.reply(result);
       return ctx.wizard.steps[ctx.wizard.cursor + 1](ctx);
     } catch (err) {

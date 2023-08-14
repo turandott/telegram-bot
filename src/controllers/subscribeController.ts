@@ -69,6 +69,7 @@ stepGetWeather.on('text', async (ctx: any) => {
         const { city } = ctx.wizard.state;
         ctx.reply(await getWeatherResponse(city));
       });
+
       ctx.wizard.state.cronJob = job;
       const subscription = {
         weatherSubscription: job,

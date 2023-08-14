@@ -12,7 +12,6 @@ const taskCreateScene = new Scenes.WizardScene(
     try {
       const taskText = ctx.message.text;
       const { user } = ctx.session;
-      console.log(user);
       createTask(user, taskText);
       return ctx.wizard.steps[ctx.wizard.cursor + 1](ctx);
     } catch (err) {

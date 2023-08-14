@@ -17,19 +17,20 @@ const taskUnsubscribeScene = new Scenes.WizardScene(
       delete ctx.session.state.cronJob;
     }
     let subscriptions = ctx.session.taskSubscriptions || [];
-    console.log(ctx.session.taskSubscriptions);
 
     subscriptions.forEach((subscription: any) => {
       if (
-        subscription
-        && subscription.taskSubscriptions
-        && subscription.userId == user
+        subscription &&
+        subscription.taskSubscriptions &&
+        subscription.userId == user
       ) {
         subscription.taskSubscriptions.stop();
       }
     });
 
-    subscriptions = subscriptions.filter((subscription: any) => subscription.userId !== user);
+    subscriptions = subscriptions.filter(
+      (subscription: any) => subscription.userId !== user,
+    );
     ctx.session.taskSubscriptions = subscriptions;
 
     const unsubscribe = await userToTaskUnsubscribe(user);
