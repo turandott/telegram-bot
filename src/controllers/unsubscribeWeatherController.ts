@@ -7,7 +7,6 @@ const stepUnsubscribe = new Composer<Scenes.WizardContext>();
 stepUnsubscribe.on('text', async (ctx: any) => {
   try {
     const userId = ctx.message.chat.id;
-    userToWetherUnsubscribe(userId);
 
     if (ctx.session.state && ctx.session.state.cronJob) {
       ctx.session.state.cronJob.stop();
@@ -25,11 +24,14 @@ stepUnsubscribe.on('text', async (ctx: any) => {
       }
     });
 
-    subscriptions = subscriptions.filter((subscription: any) => {
-      return subscription.userId !== userId;
-    });
+    subscriptions = subscriptions.filter(
+      (subscription: any) => subscription.userId !== userId,
+    );
 
     ctx.session.weatherSubscriptions = subscriptions;
+
+    await userToWetherUnsubscribe(userId);
+
     ctx.reply(ctx.i18n.t('unsubscribe.text'));
     ctx.scene.leave();
   } catch (error) {
@@ -38,9 +40,9 @@ stepUnsubscribe.on('text', async (ctx: any) => {
   }
 });
 
-const unsubscribeScene = new Scenes.WizardScene(
-  'unsubscribeScene',
+const unsubscribeWeatherScene = new Scenes.WizardScene(
+  'unsubscribeWeatherScene',
   stepUnsubscribe,
 );
 
-export default unsubscribeScene;
+export default unsubscribeWeatherScene;

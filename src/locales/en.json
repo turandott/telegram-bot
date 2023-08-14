@@ -14,7 +14,7 @@
     "city": "Please enter the city: \n if you want to exit from command try /exit",
     "time": "Enter the time in HH:MM format for subscription messages: \n if you want to exit from command try /exit ",
     "your_time": "You have choosen time: ${time}",
-    "invalid_time": "Invalid time format. Please try again.",
+    "invalid_time": "Invalid time format. Please try again. \n if you want to exit from command try /exit",
     "text": "The weather in ${city} is ${currentWeather}, the temperature is ${currentTempreture}, wind speed is ${currentWind} mph, humidity is ${currentHumidity} percent.",
     "error": "Sorry, something wrong occured with weather data."
   },
