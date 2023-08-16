@@ -28,6 +28,7 @@ const taskSubscribeScene = new Scenes.WizardScene(
       if (timeCheck.isValidTime(time)) {
         const [hours, minutes] = timeCheck.timeParser(time);
         await ctx.reply(ctx.i18n.t('weather.your_time', { time }));
+        time = hours + ':' + minutes;
 
         const existingJob = tasksJobs.find(
           (job) => job.chatId === String(user),
@@ -38,11 +39,19 @@ const taskSubscribeScene = new Scenes.WizardScene(
           console.log(`Stopped existing job for user with chat ID: ${user}`);
         }
 
-        if (!ctx.session.taskSubscriptions) {
-          ctx.session.taskSubscriptions = [];
-        }
+        let subscriptions = ctx.session.taskSubscriptions || [];
 
-        time = hours + ':' + minutes;
+        subscriptions.forEach((subscription: any) => {
+          if (subscription && subscription.sub && subscription.userId == user) {
+            subscription.sub.stop();
+          }
+        });
+
+        subscriptions = subscriptions.filter(
+          (subscription: any) => subscription.userId !== user,
+        );
+
+        ctx.session.taskSubscriptions = subscriptions;
 
         await userToTaskSubscribe(user, time);
 

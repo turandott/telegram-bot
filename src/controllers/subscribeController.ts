@@ -66,11 +66,21 @@ stepGetWeather.on('text', async (ctx: any) => {
 
       await ctx.reply(ctx.i18n.t('weather.your_time', { time }));
 
-      if (!ctx.session.weatherSubscriptions) {
-        ctx.session.weatherSubscriptions = [];
-      }
-
       time = hours + ':' + minutes;
+
+      let subscriptions = ctx.session.weatherSubscriptions || [];
+
+      subscriptions.forEach((subscription: any) => {
+        if (subscription && subscription.sub && subscription.userId == user) {
+          subscription.sub.stop();
+        }
+      });
+
+      subscriptions = subscriptions.filter(
+        (subscription: any) => subscription.userId !== user,
+      );
+
+      ctx.session.weatherSubscriptions = subscriptions;
 
       userToWetherSubscribe(user, city, time);
 
