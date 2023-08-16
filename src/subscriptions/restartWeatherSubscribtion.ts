@@ -6,26 +6,29 @@ import db from '../models/index.js';
 const { User } = db;
 const { Weather } = db;
 
+let weatherJobs = [];
+
 async function restartWeatherSubscription(sendMessage) {
   try {
     const users = await User.find({}).select('id chatId');
     for (const user of users) {
       const { id, chatId } = user;
-      console.log(id, chatId);
       const weather = await Weather.findOne({
         user: id,
       });
-      console.log(weather);
 
       if (weather && weather.time) {
         const { time, city } = weather;
         const [hours, minutes] = time.split(':');
         const cronTime = `${parseInt(minutes)} ${parseInt(hours)} * * *`;
 
-        cron.schedule(cronTime, async () => {
+        const job = cron.schedule(cronTime, async () => {
           const weatherResponse = await getWeatherResponse(city);
           sendMessage(chatId, weatherResponse);
         });
+        const jobObject = { chatId: chatId, job: job };
+
+        weatherJobs.push(jobObject);
 
         console.log(`Cron job started for user with ID: ${id}`);
       } else {
@@ -37,4 +40,4 @@ async function restartWeatherSubscription(sendMessage) {
   }
 }
 
-export default restartWeatherSubscription;
+export { restartWeatherSubscription, weatherJobs };

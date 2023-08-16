@@ -7,15 +7,15 @@ import { showTasks } from '../../models/showTasks';
 const taskDeleteScene = new Scenes.WizardScene(
   'taskDeleteScene',
   async (ctx: any) => {
-    await ctx.reply(ctx.i18n.t('task.text_id'));
     const userId = ctx.session.user;
-
+    console.log(userId);
     const tasks = await showTasks(userId);
 
     if (!tasks) {
       await ctx.reply(ctx.i18n.t('error.no_task'));
-      return ctx.wizard.selectStep(0);
+      return ctx.wizard.selectStep(2);
     }
+    await ctx.reply(ctx.i18n.t('task.text_id'));
 
     const [tasksMap, reply] = await showTask(tasks);
 

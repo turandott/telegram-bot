@@ -1,36 +1,36 @@
 import { Composer, Scenes } from 'telegraf';
 
 import { userToWetherUnsubscribe } from '../models/weatherUnsubscribe.js';
+import { weatherJobs } from '../subscriptions/restartWeatherSubscribtion.js';
 
 const stepUnsubscribe = new Composer<Scenes.WizardContext>();
 
 stepUnsubscribe.on('text', async (ctx: any) => {
   try {
-    const userId = ctx.message.chat.id;
+    const user = ctx.message.chat.id;
 
-    if (ctx.session.state && ctx.session.state.cronJob) {
-      ctx.session.state.cronJob.stop();
-      delete ctx.session.state.cronJob;
+    const existingJob = weatherJobs.find((job) => job.chatId === String(user));
+
+    if (existingJob) {
+      existingJob.job.stop();
+      console.log(`Stopped existing job for user with chat ID: ${user}`);
     }
+
     let subscriptions = ctx.session.weatherSubscriptions || [];
 
     subscriptions.forEach((subscription: any) => {
-      if (
-        subscription &&
-        subscription.weatherSubscription &&
-        subscription.userId == userId
-      ) {
-        subscription.weatherSubscription.stop();
+      if (subscription && subscription.sub && subscription.userId == user) {
+        subscription.sub.stop();
       }
     });
 
     subscriptions = subscriptions.filter(
-      (subscription: any) => subscription.userId !== userId,
+      (subscription: any) => subscription.userId !== user,
     );
 
     ctx.session.weatherSubscriptions = subscriptions;
 
-    await userToWetherUnsubscribe(userId);
+    await userToWetherUnsubscribe(user);
 
     ctx.reply(ctx.i18n.t('unsubscribe.text'));
     ctx.scene.leave();

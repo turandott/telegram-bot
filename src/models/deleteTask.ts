@@ -13,6 +13,8 @@ export async function deleteTask(user, text) {
     existingUser = await User.create({
       chatId: user,
     });
+    console.log('no user');
+    return;
   }
   const deletedTask = await Task.deleteOne({
     text,
@@ -20,7 +22,7 @@ export async function deleteTask(user, text) {
   });
 
   if (deletedTask.deletedCount === 0) {
-    return 'no task with that text';
+    return 'no task with that number';
   }
 
   return 'task deleted';

@@ -8,7 +8,5 @@ export async function userToWetherUnsubscribe(userId) {
   if (!existingUser) {
     return 'You have no subscription';
   }
-  await Weather.deleteOne({ user: existingUser._id });
-
-  await User.deleteOne({ chatId: userId });
+  await Weather.deleteMany({ user: existingUser._id });
 }

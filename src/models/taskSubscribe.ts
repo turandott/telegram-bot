@@ -10,13 +10,15 @@ export async function userToTaskSubscribe(user, time) {
   // check if the user with the chatId exists
   const existingUser = await User.findOne({ chatId: user });
   if (!existingUser) {
-    return 'You have no tasks';
+    console.log('No user');
+    return;
   }
   console.log(existingUser);
   const existingTask = await Task.find({ user: existingUser._id });
 
   if (existingTask.length === 0) {
-    return 'You have no tasks';
+    console.log('No tasks');
+    return;
   }
 
   // check if user is already subscribed to tasks

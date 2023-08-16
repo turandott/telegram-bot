@@ -4,6 +4,8 @@ import { Scenes } from 'telegraf';
 import timeCheck from '../../helpers/timeCheck';
 import { showTasks } from '../../models/showTasks';
 import { userToTaskSubscribe } from '../../models/taskSubscribe';
+import { tasksJobs } from '../../subscriptions/restartTaskSubscribtion';
+import { showTask } from '../../helpers/taskShow';
 
 const taskSubscribeScene = new Scenes.WizardScene(
   'taskSubscribeScene',
@@ -12,46 +14,58 @@ const taskSubscribeScene = new Scenes.WizardScene(
     return ctx.wizard.next();
   },
   async (ctx: any) => {
+    let time = ctx.message.text;
+    const { user } = ctx.session;
+
     try {
-      const time = ctx.message.text;
-      const { user } = ctx.session;
+      const tasks = await showTasks(user);
+
+      if (!tasks.length) {
+        await ctx.reply(ctx.i18n.t('error.no_task'));
+        return ctx.scene.enter('taskScene');
+      }
 
       if (timeCheck.isValidTime(time)) {
         const [hours, minutes] = timeCheck.timeParser(time);
         await ctx.reply(ctx.i18n.t('weather.your_time', { time }));
 
+        const existingJob = tasksJobs.find(
+          (job) => job.chatId === String(user),
+        );
+
+        if (existingJob) {
+          existingJob.job.stop();
+          console.log(`Stopped existing job for user with chat ID: ${user}`);
+        }
+
         if (!ctx.session.taskSubscriptions) {
           ctx.session.taskSubscriptions = [];
         }
 
+        time = hours + ':' + minutes;
+
         await userToTaskSubscribe(user, time);
-
-        const tasks = await showTasks(user);
-
-        if (!tasks.length) {
-          await ctx.reply(ctx.i18n.t('error.no_task'));
-          return ctx.scene.enter('taskScene');
-        }
 
         const job = cron.schedule(`${minutes} ${hours} * * *`, async () => {
           const updatedTasks = await showTasks(user);
-          const reply = `Your tasks:\n\n${updatedTasks.join('\n')}`;
-          ctx.reply(reply);
+          const [task, reply] = await showTask(updatedTasks);
+          await ctx.reply(reply);
         });
-
-        ctx.wizard.state.cronJob = job;
         const subscription = {
-          taskSubscriptions: job,
+          sub: job,
           userId: user,
         };
 
         ctx.session.taskSubscriptions.push(subscription);
-        job.start();
+
+        ctx.session.taskSubscriptions[0].sub?.start();
+
         await ctx.reply(ctx.i18n.t('task.subscribed'));
         return ctx.scene.enter('taskScene');
+      } else {
+        await ctx.reply(ctx.i18n.t('error.time_error'));
+        return ctx.scene.enter('taskScene');
       }
-      await ctx.reply(ctx.i18n.t('error.time_error'));
-      return ctx.scene.enter('taskScene');
     } catch (err) {
       ctx.reply(ctx.i18n.t('error.server'));
       return ctx.scene.enter('taskScene');

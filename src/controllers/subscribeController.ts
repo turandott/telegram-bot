@@ -5,6 +5,7 @@ import { isValidCity } from '../helpers/cityCheck.js';
 import timeCheck from '../helpers/timeCheck.js';
 import { getWeatherResponse } from '../helpers/weatherShow.js';
 import { userToWetherSubscribe } from '../models/weatherSubscribe.js';
+import { weatherJobs } from '../subscriptions/restartWeatherSubscribtion.js';
 
 const stepEnterCity = new Composer<Scenes.WizardContext>();
 const stepEnterTime = new Composer<Scenes.WizardContext>();
@@ -28,9 +29,8 @@ stepEnterTime.on('text', async (ctx: any) => {
     if (!isValidCity(city)) {
       return ctx.reply(ctx.i18n.t('error.city_error'));
     }
-
-    ctx.wizard.state.city = city;
-    ctx.wizard.state.user = user;
+    ctx.session.city = city;
+    ctx.session.user = user;
 
     await ctx.reply(ctx.i18n.t('weather.time'));
     return ctx.wizard.next();
@@ -42,17 +42,24 @@ stepEnterTime.on('text', async (ctx: any) => {
 
 stepGetWeather.on('text', async (ctx: any) => {
   try {
-    const { city } = ctx.wizard.state;
-    const { user } = ctx.wizard.state;
+    let city = ctx.session.city;
+    const user = ctx.session.user;
 
-    const time = ctx.message.text;
+    const existingJob = weatherJobs.find((job) => job.chatId === String(user));
+
+    if (existingJob) {
+      existingJob.job.stop();
+      console.log(`Stopped existing job for user with chat ID: ${user}`);
+    }
+
+    let time = ctx.message.text;
 
     if (time === '/exit') {
       await ctx.reply(ctx.i18n.t('dialog.exit'));
       return ctx.scene.leave();
     }
 
-    ctx.wizard.state.time = time;
+    ctx.session.time = time;
 
     if (timeCheck.isValidTime(time)) {
       const [hours, minutes] = timeCheck.timeParser(time);
@@ -63,21 +70,21 @@ stepGetWeather.on('text', async (ctx: any) => {
         ctx.session.weatherSubscriptions = [];
       }
 
+      time = hours + ':' + minutes;
+
       userToWetherSubscribe(user, city, time);
 
       const job = cron.schedule(`${minutes} ${hours} * * *`, async () => {
-        const { city } = ctx.wizard.state;
         ctx.reply(await getWeatherResponse(city));
       });
 
-      ctx.wizard.state.cronJob = job;
       const subscription = {
-        weatherSubscription: job,
+        sub: job,
         userId: user,
       };
 
       ctx.session.weatherSubscriptions.push(subscription);
-      job.start();
+      ctx.session.weatherSubscriptions[0].sub?.start();
 
       return ctx.scene.leave();
     }

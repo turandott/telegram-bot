@@ -6,8 +6,8 @@ import { TOKEN } from './config/env.config';
 import { limitConfig } from './config/limit';
 import i18n from './config/localization';
 import controllers from './controllers';
-import restartTaskSubscription from './subscriptions/restartTaskSubscribtion';
-import restartWeatherSubscription from './subscriptions/restartWeatherSubscribtion';
+import { restartTaskSubscription } from './subscriptions/restartTaskSubscribtion';
+import { restartWeatherSubscription } from './subscriptions/restartWeatherSubscribtion';
 import { Context } from './types';
 
 const token: string | undefined = TOKEN;

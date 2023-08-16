@@ -7,6 +7,8 @@ const { User } = db;
 const { TaskSubscribe } = db;
 const { Task } = db;
 
+let tasksJobs = [];
+
 async function restartTaskSubscription(sendMessage) {
   try {
     const users = await User.find({}).select('id chatId');
@@ -19,21 +21,30 @@ async function restartTaskSubscription(sendMessage) {
 
       if (subscribe) {
         const { user, time } = subscribe;
-        console.log(user, time);
         const [hours, minutes] = time.split(':');
-        console.log(hours, minutes);
+
         const cronTime = `${parseInt(minutes)} ${parseInt(hours)} * * *`;
 
-        cron.schedule(cronTime, async () => {
+        const job = cron.schedule(cronTime, async () => {
           const tasks = await Task.find({ user });
-          console.log(tasks);
 
+          if (!tasks) {
+            sendMessage(
+              chatId,
+              'You have subscription,  but have no tasks( create new tasks or unsubscribe',
+            );
+            return;
+          }
           const taskTexts = tasks.map((task) => task.text);
           console.log(taskTexts);
 
-          const receivedTasks = await showTask(taskTexts);
-          sendMessage(chatId, receivedTasks);
+          const [tasksMap, reply] = await showTask(taskTexts);
+          sendMessage(chatId, reply);
         });
+
+        const jobObject = { chatId: chatId, job: job };
+
+        tasksJobs.push(jobObject);
 
         console.log(`Cron job tasks started for user with ID: ${id}`);
       } else {
@@ -45,4 +56,4 @@ async function restartTaskSubscription(sendMessage) {
   }
 }
 
-export default restartTaskSubscription;
+export { restartTaskSubscription, tasksJobs };

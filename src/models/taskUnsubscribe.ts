@@ -18,7 +18,7 @@ export async function userToTaskUnsubscribe(user) {
   if (!existingSubscription) {
     return 'You have no subscription';
   }
-  await TaskSubscribe.deleteOne({ user: existingUser._id });
+  await TaskSubscribe.deleteMany({ user: existingUser._id });
 
   return 'Unsubscribed tasks successfully';
 }
